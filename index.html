@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dUML</title>
+  </head>
+  <body></body>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="/dist/index.js"></script>
+  <script>
+    const classes = [
+      { name: 'User' },
+      { name: 'Feature' },
+      { name: 'FeatureImplementation' },
+      { name: 'Package' },
+      { name: 'Product' },
+      { name: 'RANSharingOption' },
+      { name: 'DeploymentOption' },
+      { name: 'RadioAccessTechnology' },
+    ];
+    const associations = [
+      { from: 'User', name: 'owns', to: 'Feature' },
+      { from: 'User', name: 'owns', to: 'Package' },
+      { from: 'Product', name: 'equips', to: 'Package' },
+      { from: 'Product', name: 'supports', to: 'DeploymentOption' },
+      { from: 'Product', name: 'supports', to: 'RANSharingOption' },
+      { from: 'Product', name: 'supports', to: 'RadioAccessTechnology' },
+      { from: 'FeatureImplementation', name: 'implements', to: 'Feature' },
+      { from: 'FeatureImplementation', name: 'supports', to: 'DeploymentOption' },
+      { from: 'FeatureImplementation', name: 'supports', to: 'Package' },
+      { from: 'FeatureImplementation', name: 'supports', to: 'RANSharingOption' },
+      { from: 'FeatureImplementation', name: 'supports', to: 'RadioAccessTechnology' },
+    ];
+    const cd = new duml.ClassDiagram(d3, { classes, associations });
+    document.body.appendChild(cd.svg);
+  </script>
+</html>
