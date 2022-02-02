@@ -7,14 +7,16 @@ declare type Association = {
     from: string;
     to: string;
 };
-export declare class ClassDiagram {
-    private WIDTH;
-    private HEIGHT;
-    svg: SVGSVGElement | null;
-    constructor(d3: typeof d3lib, { classes, associations }: {
-        classes: Class[];
-        associations: Association[];
-    });
-}
+declare type Options = {
+    width?: number;
+    height?: number;
+    vw?: number;
+    vh?: number;
+    force?: number;
+};
+export declare function ClassDiagram(d3: typeof d3lib, { classes, associations }: {
+    classes: Class[];
+    associations: Association[];
+}, options?: Options): SVGSVGElement | null;
 export {};
 //# sourceMappingURL=classDiagram.d.ts.map

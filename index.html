@@ -11,29 +11,33 @@
   <script src="/dist/index.js"></script>
   <script>
     const classes = [
-      { name: 'User' },
-      { name: 'Feature' },
-      { name: 'FeatureImplementation' },
-      { name: 'Package' },
-      { name: 'Product' },
-      { name: 'RANSharingOption' },
-      { name: 'DeploymentOption' },
-      { name: 'RadioAccessTechnology' },
+      { name: "DeploymentOption" },
+      { name: "Feature" },
+      { name: "FeatureImplementation" },
+      { name: "Package" },
+      { name: "Product" },
+      { name: "RANSharingOption" },
+      { name: "RadioAccessTechnology" },
+      { name: "User" },
     ];
     const associations = [
-      { from: 'User', name: 'owns', to: 'Feature' },
-      { from: 'User', name: 'owns', to: 'Package' },
-      { from: 'Product', name: 'equips', to: 'Package' },
-      { from: 'Product', name: 'supports', to: 'DeploymentOption' },
-      { from: 'Product', name: 'supports', to: 'RANSharingOption' },
-      { from: 'Product', name: 'supports', to: 'RadioAccessTechnology' },
-      { from: 'FeatureImplementation', name: 'implements', to: 'Feature' },
-      { from: 'FeatureImplementation', name: 'supports', to: 'DeploymentOption' },
-      { from: 'FeatureImplementation', name: 'supports', to: 'Package' },
-      { from: 'FeatureImplementation', name: 'supports', to: 'RANSharingOption' },
-      { from: 'FeatureImplementation', name: 'supports', to: 'RadioAccessTechnology' },
+      { from: "User", name: "owns", to: "Feature" },
+      { from: "User", name: "owns", to: "Package" },
+      { from: "Product", name: "equips", to: "Package" },
+      { from: "Product", name: "supports", to: "DeploymentOption" },
+      { from: "Product", name: "supports", to: "RANSharingOption" },
+      { from: "Product", name: "supports", to: "RadioAccessTechnology" },
+      { from: "FeatureImplementation", name: "implements", to: "Feature" },
+      { from: "FeatureImplementation", name: "supports", to: "DeploymentOption" },
+      { from: "FeatureImplementation", name: "supports", to: "Package" },
+      { from: "FeatureImplementation", name: "supports", to: "RANSharingOption" },
+      { from: "FeatureImplementation", name: "supports", to: "RadioAccessTechnology" },
     ];
-    const cd = new duml.ClassDiagram(d3, { classes, associations });
-    document.body.appendChild(cd.svg);
+    const classDiagram = duml.ClassDiagram(
+      d3,
+      { classes, associations },
+      { width: 1600, height: 1600, vw: 800, vh: 800, force: -1600 }
+    );
+    document.body.appendChild(classDiagram);
   </script>
 </html>
