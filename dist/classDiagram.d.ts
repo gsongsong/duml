@@ -4,8 +4,8 @@ declare type Class = {
 };
 declare type Association = {
     name: string;
-    from: string;
-    to: string;
+    source: string;
+    target: string;
 };
 declare type Options = {
     width?: number;

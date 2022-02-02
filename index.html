@@ -21,17 +21,17 @@
       { name: "User" },
     ];
     const associations = [
-      { from: "User", name: "owns", to: "Feature" },
-      { from: "User", name: "owns", to: "Package" },
-      { from: "Product", name: "equips", to: "Package" },
-      { from: "Product", name: "supports", to: "DeploymentOption" },
-      { from: "Product", name: "supports", to: "RANSharingOption" },
-      { from: "Product", name: "supports", to: "RadioAccessTechnology" },
-      { from: "FeatureImplementation", name: "implements", to: "Feature" },
-      { from: "FeatureImplementation", name: "supports", to: "DeploymentOption" },
-      { from: "FeatureImplementation", name: "supports", to: "Package" },
-      { from: "FeatureImplementation", name: "supports", to: "RANSharingOption" },
-      { from: "FeatureImplementation", name: "supports", to: "RadioAccessTechnology" },
+      { source: "User", name: "owns", target: "Feature" },
+      { source: "User", name: "owns", target: "Package" },
+      { source: "Product", name: "equips", target: "Package" },
+      { source: "Product", name: "supports", target: "DeploymentOption" },
+      { source: "Product", name: "supports", target: "RANSharingOption" },
+      { source: "Product", name: "supports", target: "RadioAccessTechnology" },
+      { source: "FeatureImplementation", name: "implements", target: "Feature" },
+      { source: "FeatureImplementation", name: "supports", target: "DeploymentOption" },
+      { source: "FeatureImplementation", name: "supports", target: "Package" },
+      { source: "FeatureImplementation", name: "supports", target: "RANSharingOption" },
+      { source: "FeatureImplementation", name: "supports", target: "RadioAccessTechnology" },
     ];
     const classDiagram = duml.ClassDiagram(
       d3,

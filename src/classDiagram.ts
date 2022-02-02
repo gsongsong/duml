@@ -7,8 +7,8 @@ type Class = {
 
 type Association = {
   name: string;
-  from: string;
-  to: string;
+  source: string;
+  target: string;
 };
 
 type Options = {
@@ -25,10 +25,7 @@ export function ClassDiagram(
   options: Options = {}
 ) {
   const classList = classes.map(Object.create);
-  const associationList = associations.map((association) => {
-    const { name, from: source, to: target } = association;
-    return Object.create({ name, source, target });
-  });
+  const associationList = associations.map(Object.create);
   const associationNameList = associationList.map((a) => a.name);
   const colorSchema = d3.schemeCategory10;
   const color = d3.scaleOrdinal(associationNameList, colorSchema);
