@@ -78,7 +78,7 @@ function addLinks(
     .data(associationList)
     .join("path")
     .attr("stroke", "#000000")
-    .attr("marker-end", "url(#arrow)");
+    .attr("marker-end", (d) => (d.arrow ? "url(#arrow)" : ""));
 }
 
 function addNodes(
@@ -118,7 +118,7 @@ function addNodes(
 
 function associationToNode(association: Association) {
   const { source, name, target } = association;
-  return Object.create({ id: `${source}-${name}-${target}`, name });
+  return Object.create({ id: `${source}-${name}-${target}`, name, edge: true });
 }
 
 function classToNode(cls: Class) {
