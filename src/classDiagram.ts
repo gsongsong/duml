@@ -24,15 +24,16 @@ export function ClassDiagram(
   { classes, associations }: { classes: Class[]; associations: Association[] },
   options: Options = {}
 ) {
-  const classList = classes.map(Object.create);
-  const associationList = associations.map(Object.create);
-  const associationNameList = associationList.map((a) => a.name);
-  const color = getColorSchema(d3, associationNameList);
+  const nodeList = [
+    ...classes.map(classToNode),
+    ...associations.map(associationToNode),
+  ];
+  const edgeList = associations.map(splitAssociation).flat();
   const svg = initCanvas(d3, options);
-  const simulation = initSimulation(d3, classList, associationList, options);
-  addDefinitions(svg, associationNameList, color);
-  const link = addLinks(svg, associationList, color);
-  const node = addNodes(svg, classList, dragFunc(d3, simulation));
+  const simulation = initSimulation(d3, nodeList, edgeList, options);
+  addDefinitions(svg);
+  const link = addLinks(svg, edgeList);
+  const node = addNodes(svg, nodeList, dragFunc(d3, simulation));
 
   simulation.on("tick", () => {
     link.attr("d", linkArcFunc);
@@ -49,16 +50,12 @@ export function ClassDiagram(
 }
 
 function addDefinitions(
-  svg: d3lib.Selection<SVGSVGElement, undefined, null, undefined>,
-  associationNameList: string[],
-  color: d3lib.ScaleOrdinal<any, string, never>
+  svg: d3lib.Selection<SVGSVGElement, undefined, null, undefined>
 ) {
   svg
     .append("defs")
-    .selectAll("marker")
-    .data(associationNameList)
-    .join("marker")
-    .attr("id", (d) => `arrow-${d}`)
+    .append("marker")
+    .attr("id", "arrow")
     .attr("viewBox", "0 -5 10 10")
     .attr("refX", 15)
     .attr("refY", -0.5)
@@ -66,14 +63,12 @@ function addDefinitions(
     .attr("markerHeight", 6)
     .attr("orient", "auto")
     .append("path")
-    .attr("fill", color)
     .attr("d", "M0,-5L10,0L0,5");
 }
 
 function addLinks(
   svg: d3lib.Selection<SVGSVGElement, undefined, null, undefined>,
-  associationList: any[],
-  color: d3lib.ScaleOrdinal<any, string, never>
+  associationList: any[]
 ) {
   return svg
     .append("g")
@@ -82,8 +77,8 @@ function addLinks(
     .selectAll("path")
     .data(associationList)
     .join("path")
-    .attr("stroke", (d) => color((d as Association).name))
-    .attr("marker-end", (d) => `url(#arrow-${d.name})`);
+    .attr("stroke", "#000000")
+    .attr("marker-end", "url(#arrow)");
 }
 
 function addNodes(
@@ -121,6 +116,16 @@ function addNodes(
   return node;
 }
 
+function associationToNode(association: Association) {
+  const { source, name, target } = association;
+  return Object.create({ id: `${source}-${name}-${target}`, name });
+}
+
+function classToNode(cls: Class) {
+  const { name } = cls;
+  return Object.create({ id: name, name });
+}
+
 function dragFunc(
   d3: typeof d3lib,
   simulation: d3lib.Simulation<
@@ -152,12 +157,6 @@ function dragFunc(
     .on("end", dragended);
 }
 
-// TODO: User input as color schema preference
-function getColorSchema(d3: typeof d3lib, associationNameList: string[]) {
-  const colorSchema = d3.schemeCategory10;
-  return d3.scaleOrdinal(associationNameList, colorSchema);
-}
-
 function initCanvas(d3: typeof d3lib, options: Options = {}) {
   const vw = options.vw ?? 600;
   const vh = options.vh ?? 600;
@@ -181,7 +180,7 @@ function initSimulation(
     .forceSimulation(classList)
     .force(
       "link",
-      d3.forceLink(associationList).id((d) => (d as Class).name)
+      d3.forceLink(associationList).id((d) => (d as any).id)
     )
     .force("charge", d3.forceManyBody().strength(force))
     .force("x", d3.forceX())
@@ -200,4 +199,19 @@ function linkArcFunc(d: SimulationLinkDatum<SimulationNodeDatum>) {
       M${sx},${sy}
       A${r},${r} 0 0,1 ${tx},${ty}
     `;
+}
+
+function splitAssociation(association: Association) {
+  const { source, name, target } = association;
+  return [
+    {
+      source,
+      target: `${source}-${name}-${target}`,
+    },
+    {
+      source: `${source}-${name}-${target}`,
+      target,
+      arrow: true,
+    },
+  ];
 }
