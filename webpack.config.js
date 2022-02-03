@@ -2,8 +2,10 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
-  watch: true,
-  entry: './src/index.ts',
+  entry: {
+    dist: './src/index.ts',
+    docs: './src/index.ts',
+  },
   module: {
     rules: [
       {
@@ -17,8 +19,18 @@ module.exports = {
     extensions: ['.ts', '.js'],
   },
   output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: '[name]/index.js',
+    path: path.resolve(__dirname),
     library: 'duml',
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'docs'),
+    },
+    hot: false,
+    devMiddleware: {
+      publicPath: '/docs',
+      writeToDisk: true,
+    },
   },
 };

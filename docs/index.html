@@ -8,8 +8,9 @@
   </head>
   <body></body>
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-  <script src="/dist/index.js"></script>
+  <script src="./index.js"></script>
   <script>
+    // prettier-ignore
     const classes = [
       { name: "DeploymentOption" },
       { name: "Feature" },
@@ -20,6 +21,7 @@
       { name: "RadioAccessTechnology" },
       { name: "User" },
     ];
+    // prettier-ignore
     const associations = [
       { source: "User", name: "owns", target: "Feature" },
       { source: "User", name: "owns", target: "Package" },
