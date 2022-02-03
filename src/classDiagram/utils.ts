@@ -65,13 +65,16 @@ export function maxRows(node: unknown) {
  */
 export function splitAssociation(association: Association) {
   const { source, name, target } = association;
+  const type = `${source}-${name}-${target}`;
   return [
     {
+      type,
       source,
-      target: `${source}-${name}-${target}`,
+      target: type,
     },
     {
-      source: `${source}-${name}-${target}`,
+      type,
+      source: type,
       target,
       arrow: true,
     },

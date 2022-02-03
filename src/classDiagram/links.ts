@@ -4,16 +4,17 @@ import { FONT_SIZE } from "./canvas";
 
 export function addLinks(
   svg: d3lib.Selection<SVGSVGElement, undefined, null, undefined>,
-  associationList: any[]
+  associationList: any[],
+  color: d3lib.ScaleOrdinal<string, string, never>,
 ) {
   return svg
     .append("g")
     .selectAll("path")
     .data(associationList)
     .join("path")
-    .attr("stroke", "black")
+    .attr("stroke", (d) => color(d.type))
     .attr("fill", "none")
-    .attr("marker-end", (d) => (d.arrow ? "url(#arrow)" : ""));
+    .attr("marker-end", (d) => (d.arrow ? `url(#arrow-${d.type})` : ""));
 }
 
 /**
