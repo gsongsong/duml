@@ -19,8 +19,10 @@ export function ClassDiagram(
     ...associations.map(associationToNode),
   ];
   const edgeList = associations.map(splitAssociation).flat();
+
   const svg = initCanvas(d3, options);
   const simulation = initSimulation(d3, nodeList, edgeList, options);
+  
   addDefinitions(svg);
   const link = addLinks(svg, edgeList);
   const node = addNodes(svg, nodeList, dragFunc(d3, simulation));
