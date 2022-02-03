@@ -53,7 +53,7 @@ export function addNodes(
     .text((d) => attributeToStr(d))
     .attr("dominant-baseline", "text-after-edge")
     .attr("x", FONT_SIZE)
-    .attr("dy", (_, index) => `${index * FONT_SIZE}`);
+    .attr("dy", (_, index) => index ? FONT_SIZE : 0);
 
   return node;
 }
