@@ -5,10 +5,10 @@ import { Association, Attribute, Class } from "./types";
  */
 export function associationToNode(association: Association) {
   const { source, name, target } = association;
-  const width = estimateWidth(association);
   return Object.create({
     id: `${source}-${name}-${target}`,
-    width,
+    maxLength: maxLength(association),
+    maxRows: maxRows(association),
     edge: true,
     ...association,
   });
@@ -28,14 +28,18 @@ export function attributeToStr(attribute: Attribute) {
  */
 export function classToNode(cls: Class) {
   const { name } = cls;
-  const width = estimateWidth(cls);
-  return Object.create({ id: name, width, ...cls });
+  return Object.create({
+    id: name,
+    maxLength: maxLength(cls),
+    maxRows: maxRows(cls),
+    ...cls,
+  });
 }
 
 /**
  * Estimates the maximum number of characters to be reserved for a node
  */
-export function estimateWidth(node: unknown) {
+export function maxLength(node: unknown) {
   const { name } = node as Class & Association;
   const { attributes } = node as Partial<Class>;
   const { source, target } = node as Partial<Association>;
@@ -43,6 +47,15 @@ export function estimateWidth(node: unknown) {
     name.length,
     ...(attributes?.map((attribute) => attributeToStr(attribute).length) ?? [0])
   );
+}
+
+/**
+ * Estimates the maximum number of rows to be reserved for a node
+ */
+export function maxRows(node: unknown) {
+  const { attributes } = node as Partial<Class>;
+  const { source, target } = node as Partial<Association>;
+  return 1 + (attributes?.length ?? 0);
 }
 
 /**

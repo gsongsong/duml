@@ -1,5 +1,6 @@
 import * as d3lib from "d3";
 import { DragBehavior, SimulationNodeDatum } from "d3";
+import { FONT_SIZE } from "./canvas";
 import { Attribute, Class } from "./types";
 import { attributeToStr } from "./utils";
 
@@ -22,41 +23,42 @@ export function addNodes(
     .append("rect")
     .attr("stroke", "black")
     .attr("fill", "white")
-    .attr("width", (d) => (d.width + 2) * 8)
-    .attr("height", "1em");
+    .attr("width", (d) => (d.maxLength + 2) * FONT_SIZE)
+    .attr("height", FONT_SIZE);
 
   node
     .append("text")
     .text((d) => (d as Class).name)
     .style("font-family", "monospace")
-    .attr("x", "1em")
-    .attr("y", "1em");
+    .attr("x", FONT_SIZE)
+    .attr("y", FONT_SIZE);
 
   // Node attributes
   node
     .append("rect")
-    .attr("y", "1em")
+    .attr("y", FONT_SIZE)
     .attr("stroke", "black")
     .attr("fill", "white")
-    .attr("width", (d) => (d.width + 2) * 8)
-    .attr("height", (d) => `${d.attributes?.length ?? 0}em`);
+    .attr("width", (d) => (d.maxLength + 2) * FONT_SIZE)
+    .attr("height", (d) => (d.attributes?.length ?? 0) * FONT_SIZE);
 
   node
     .append("text")
-    .attr("y", "2em")
+    .attr("y", 2 * FONT_SIZE)
     .style("font-family", "monospace")
     .selectAll("tspan")
     .data((d) => d.attributes ?? [])
     .join("tspan")
     .text((d) => attributeToStr(d as Attribute))
-    .attr("x", "1em")
-    .attr("dy", (_, index) => `${index}em`);
+    .attr("x", FONT_SIZE)
+    .attr("dy", (_, index) => `${index * FONT_SIZE}`);
 
   return node;
 }
 
 export function nodeTransformFunc(d: any) {
-  return `translate(${((d as SimulationNodeDatum).x ?? 0) - (d.width + 2) * 4},${
-    (d as SimulationNodeDatum).y
-  })`
+  return `translate(
+    ${((d as SimulationNodeDatum).x ?? 0) - (d.maxLength + 2) * FONT_SIZE / 2},
+    ${((d as SimulationNodeDatum).y ?? 0) - d.maxRows * FONT_SIZE / 2}
+  )`;
 }

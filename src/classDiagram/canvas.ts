@@ -1,6 +1,8 @@
 import * as d3lib from "d3";
 import { Options } from "./types";
 
+export const FONT_SIZE = 16;
+
 /**
  * Canvas boilerplate. Configures width, height and view box
  */
@@ -13,5 +15,6 @@ export function initCanvas(d3: typeof d3lib, options: Options = {}) {
     .create("svg")
     .attr("viewBox", [-vw / 2, -vh / 2, vw, vh])
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .attr("font-size", FONT_SIZE)
 }
