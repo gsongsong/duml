@@ -12,14 +12,25 @@
   <script>
     // prettier-ignore
     const classes = [
-      { name: "DeploymentOption" },
+      {
+        name: "DeploymentOption",
+        attributes: [
+          { visibility: 'public', name: 'name', type: 'string' },
+        ],
+      },
       { name: "Feature" },
       { name: "FeatureImplementation" },
       { name: "Package" },
       { name: "Product" },
       { name: "RANSharingOption" },
       { name: "RadioAccessTechnology" },
-      { name: "User" },
+      {
+        name: "User",
+        attributes: [
+          { visibility: 'public', name: 'username', type: 'string' },
+          { visibility: 'private', name: 'password', type: 'string' },
+        ],
+      },
     ];
     // prettier-ignore
     const associations = [

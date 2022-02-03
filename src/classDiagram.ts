@@ -1,8 +1,15 @@
 import * as d3lib from "d3";
 import { DragBehavior, SimulationLinkDatum, SimulationNodeDatum } from "d3";
 
+type Attribute = {
+  visibility: "public" | "private";
+  name: string;
+  type: string;
+};
+
 type Class = {
   name: string;
+  attributes: Attribute[];
 };
 
 type Association = {
@@ -40,7 +47,7 @@ export function ClassDiagram(
     node.attr(
       "transform",
       (d) =>
-        `translate(${(d as SimulationNodeDatum).x},${
+        `translate(${((d as SimulationNodeDatum).x ?? 0) - (d.width + 2) * 4},${
           (d as SimulationNodeDatum).y
         })`
     );
@@ -72,12 +79,11 @@ function addLinks(
 ) {
   return svg
     .append("g")
-    .attr("fill", "none")
-    .attr("stroke-width", 1.5)
     .selectAll("path")
     .data(associationList)
     .join("path")
-    .attr("stroke", "#000000")
+    .attr("stroke", "black")
+    .attr("fill", "none")
     .attr("marker-end", (d) => (d.arrow ? "url(#arrow)" : ""));
 }
 
@@ -88,42 +94,72 @@ function addNodes(
 ) {
   const node = svg
     .append("g")
-    .attr("fill", "currentColor")
-    .attr("stroke-linecap", "round")
-    .attr("stroke-linejoin", "round")
     .selectAll("g")
     .data(classList)
     .join("g")
+    .attr("stroke-linecap", "round")
+    .attr("stroke-linejoin", "round")
     .call(drag as any);
 
+  // Node name
   node
-    .append("circle")
-    .attr("stroke", "white")
-    .attr("stroke-width", 1.5)
-    .attr("r", 4);
+    .append("rect")
+    .attr("stroke", "black")
+    .attr("fill", "white")
+    .attr("width", (d) => (d.width + 2) * 8)
+    .attr("height", "1em");
 
   node
     .append("text")
-    .attr("x", 8)
-    .attr("y", "0.31em")
     .text((d) => (d as Class).name)
-    .clone(true)
-    .lower()
-    .attr("fill", "none")
-    .attr("storke", "white")
-    .attr("stroke-width", 3);
+    .style("font-family", "monospace")
+    .attr("x", "1em")
+    .attr("y", "1em");
+
+  // Node attributes
+  node
+    .append("rect")
+    .attr("y", "1em")
+    .attr("stroke", "black")
+    .attr("fill", "white")
+    .attr("width", (d) => (d.width + 2) * 8)
+    .attr("height", (d) => `${d.attributes?.length ?? 0}em`);
+
+  node
+    .append("text")
+    .attr("y", "2em")
+    .style("font-family", "monospace")
+    .selectAll("tspan")
+    .data((d) => d.attributes ?? [])
+    .join("tspan")
+    .text((d) => attributeToStr(d as Attribute))
+    .attr("x", "1em")
+    .attr("dy", (_, index) => `${index}em`);
 
   return node;
 }
 
+function attributeToStr(attribute: Attribute) {
+  const { visibility, name, type } = attribute;
+  const visibilityMark = visibility === "private" ? "-" : "+";
+  return `${visibilityMark} ${name}: ${type}`;
+}
+
 function associationToNode(association: Association) {
   const { source, name, target } = association;
-  return Object.create({ id: `${source}-${name}-${target}`, name, edge: true });
+  const width = estimateWidth(association);
+  return Object.create({
+    id: `${source}-${name}-${target}`,
+    width,
+    edge: true,
+    ...association,
+  });
 }
 
 function classToNode(cls: Class) {
   const { name } = cls;
-  return Object.create({ id: name, name });
+  const width = estimateWidth(cls);
+  return Object.create({ id: name, width, ...cls });
 }
 
 function dragFunc(
@@ -155,6 +191,16 @@ function dragFunc(
     .on("start", dragstarted)
     .on("drag", dragged)
     .on("end", dragended);
+}
+
+function estimateWidth(node: unknown) {
+  const { name } = node as Class & Association;
+  const { attributes } = node as Partial<Class>;
+  const { source, target } = node as Partial<Association>;
+  return Math.max(
+    name.length,
+    ...(attributes?.map((attribute) => attributeToStr(attribute).length) ?? [0])
+  );
 }
 
 function initCanvas(d3: typeof d3lib, options: Options = {}) {
