@@ -21,6 +21,3 @@ export function initSimulation(
     .force("x", d3.forceX())
     .force("y", d3.forceY());
 }
-function splitAssociation(splitAssociation: any) {
-  throw new Error("Function not implemented.");
-}
