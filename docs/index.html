@@ -10,46 +10,93 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="./index.js"></script>
   <script>
-    // prettier-ignore
     const classes = [
       {
         name: "DeploymentOption",
+        attributes: [{ visibility: "public", name: "name", type: "string" }],
+      },
+      {
+        name: "Feature",
         attributes: [
-          { visibility: 'public', name: 'name', type: 'string' },
+          { visibility: "public", name: "id", type: "string" },
+          { visibility: "public", name: "name", type: "string" },
         ],
       },
-      { name: "Feature" },
-      { name: "FeatureImplementation" },
-      { name: "Package" },
-      { name: "Product" },
-      { name: "RANSharingOption" },
-      { name: "RadioAccessTechnology" },
+      {
+        name: "FeatureImplementation",
+        attributes: [{ visibility: "public", name: "version", type: "number" }],
+      },
+      { name: "FeatureTransferRequest" },
+      {
+        name: "Milestone",
+        attributes: [
+          { visibility: "public", name: "name", type: "string" },
+          { visibility: "public", name: "date", type: "number" },
+        ],
+      },
+      {
+        name: "Operator",
+        attributes: [{ visibility: "public", name: "name", type: "string" }],
+      },
+      { name: "OwnerTransferRequest" },
+      {
+        name: "Package",
+        attributes: [
+          { visibility: "public", name: "name", type: "string" },
+          { visibility: "public", name: "type", type: "PackageType" },
+          { visibility: "public", name: "status", type: "PackageStatus" },
+        ],
+      },
+      {
+        name: "Product",
+        attributes: [{ visibility: "public", name: "name", type: "string" }],
+      },
+      {
+        name: "RANSharingOption",
+        attributes: [{ visibility: "public", name: "name", type: "string" }],
+      },
+      {
+        name: "RadioAccessTechnology",
+        attributes: [{ visibility: "public", name: "name", type: "string" }],
+      },
       {
         name: "User",
         attributes: [
-          { visibility: 'public', name: 'username', type: 'string' },
-          { visibility: 'private', name: 'password', type: 'string' },
+          { visibility: "public", name: "username", type: "string" },
+          { visibility: "private", name: "password", type: "string" },
+          { visibility: "public", name: "permissions", type: "Permission[]" },
         ],
       },
     ];
-    // prettier-ignore
     const associations = [
       { source: "User", name: "owns", target: "Feature" },
       { source: "User", name: "owns", target: "Package" },
+      { source: "User", name: "requests", target: "FeatureTransferRequest" },
+      { source: "User", name: "requests", target: "OwnerTransferRequest" },
+      { source: "User", name: "reviews", target: "FeatureTransferRequest" },
+      { source: "User", name: "reviews", target: "OwnerTransferRequest" },
+      { source: "Package", name: "milestoned", target: "Milestone" },
+      { source: "Package", name: "succeeds", target: "Package" },
+      { source: "Package", name: "targets", target: "Operator" },
       { source: "Product", name: "equips", target: "Package" },
       { source: "Product", name: "supports", target: "DeploymentOption" },
       { source: "Product", name: "supports", target: "RANSharingOption" },
       { source: "Product", name: "supports", target: "RadioAccessTechnology" },
       { source: "FeatureImplementation", name: "implements", target: "Feature" },
+      { source: "FeatureImplementation", name: "succeeds", target: "FeatureImplementation" },
       { source: "FeatureImplementation", name: "supports", target: "DeploymentOption" },
-      { source: "FeatureImplementation", name: "supports", target: "Package" },
+      { source: "FeatureImplementation", name: "supports", target: "Product" },
       { source: "FeatureImplementation", name: "supports", target: "RANSharingOption" },
       { source: "FeatureImplementation", name: "supports", target: "RadioAccessTechnology" },
+      { source: "FeatureTransferRequest", name: "transfers", target: "FeatureImplementation" },
+      { source: "FeatureTransferRequest", name: "transferredTo", target: "Package" },
+      { source: "OwnerTransferRequest", name: "transfers", target: "Feature" },
+      { source: "OwnerTransferRequest", name: "transferredTo", target: "User" },
     ];
     const classDiagram = duml.ClassDiagram(
       d3,
       { classes, associations },
-      { width: 800, height: 800, vw: 1000, vh: 1000, force: -1600 }
+      { width: 1600, height: 900, vw: 3200, vh: 1800, force: -4000 }
     );
     document.body.appendChild(classDiagram);
   </script>
