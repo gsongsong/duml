@@ -1,5 +1,4 @@
 import * as d3lib from "d3";
-import { SimulationNodeDatum } from "d3";
 import { initCanvas } from "./canvas";
 import { addDefinitions } from "./definitions";
 import { dragFunc } from "./dragFunc";
