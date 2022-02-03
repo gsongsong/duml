@@ -23,6 +23,7 @@ export function addNodes(
     .append("rect")
     .attr("stroke", "black")
     .attr("fill", "white")
+    .attr("opacity", (d) => 'edge' in d ? 0.25 : 1)
     .attr("width", (d) => (d.maxLength + 2) * FONT_SIZE)
     .attr("height", FONT_SIZE);
 
@@ -40,6 +41,7 @@ export function addNodes(
     .attr("y", FONT_SIZE)
     .attr("stroke", "black")
     .attr("fill", "white")
+    .attr("opacity", (d) => 'edge' in d ? 0.25 : 1)
     .attr("width", (d) => (d.maxLength + 2) * FONT_SIZE)
     .attr("height", (d) => (d.attributes?.length ?? 0) * FONT_SIZE);
 
