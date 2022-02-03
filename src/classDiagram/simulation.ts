@@ -1,21 +1,21 @@
 import * as d3lib from "d3";
-import { Options } from "./types";
+import { Node, Options, SegmentedLink } from "./types";
 
 /**
  * Simulation boilerplate. Configures force
  */
 export function initSimulation(
   d3: typeof d3lib,
-  classList: any[],
-  associationList: any[],
+  nodeList: Node[],
+  linkList: SegmentedLink[],
   options: Options = {}
 ) {
   const force = options.force ?? -400;
   return d3
-    .forceSimulation(classList)
+    .forceSimulation(nodeList)
     .force(
       "link",
-      d3.forceLink(associationList).id((d) => (d as any).id)
+      d3.forceLink<Node, SegmentedLink>(linkList).id((d) => d.id)
     )
     .force("charge", d3.forceManyBody().strength(force))
     .force("x", d3.forceX())

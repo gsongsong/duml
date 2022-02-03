@@ -1,13 +1,13 @@
 import * as d3lib from "d3";
-import { DragBehavior, SimulationNodeDatum } from "d3";
+import { DragBehavior, SubjectPosition } from "d3";
 import { FONT_SIZE } from "./canvas";
-import { Attribute, Class } from "./types";
+import { Node } from "./types";
 import { attributeToStr } from "./utils";
 
 export function addNodes(
   svg: d3lib.Selection<SVGSVGElement, undefined, null, undefined>,
-  classList: any[],
-  drag: DragBehavior<Element, unknown, unknown>
+  classList: Node[],
+  drag: DragBehavior<Element, Node, Node | SubjectPosition>
 ) {
   const node = svg
     .append("g")
@@ -28,7 +28,7 @@ export function addNodes(
 
   node
     .append("text")
-    .text((d) => (d as Class).name)
+    .text((d) => d.name)
     .style("font-family", "monospace")
     .attr("x", FONT_SIZE)
     .attr("y", FONT_SIZE);
@@ -49,16 +49,16 @@ export function addNodes(
     .selectAll("tspan")
     .data((d) => d.attributes ?? [])
     .join("tspan")
-    .text((d) => attributeToStr(d as Attribute))
+    .text((d) => attributeToStr(d))
     .attr("x", FONT_SIZE)
     .attr("dy", (_, index) => `${index * FONT_SIZE}`);
 
   return node;
 }
 
-export function nodeTransformFunc(d: any) {
+export function nodeTransformFunc(d: Node) {
   return `translate(
-    ${((d as SimulationNodeDatum).x ?? 0) - (d.maxLength + 2) * FONT_SIZE / 2},
-    ${((d as SimulationNodeDatum).y ?? 0) - d.maxRows * FONT_SIZE / 2}
+    ${(d.x ?? 0) - ((d.maxLength + 2) * FONT_SIZE) / 2},
+    ${(d.y ?? 0) - (d.maxRows * FONT_SIZE) / 2}
   )`;
 }

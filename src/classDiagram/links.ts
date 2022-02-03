@@ -1,16 +1,18 @@
 import * as d3lib from "d3";
-import { SimulationLinkDatum, SimulationNodeDatum } from "d3";
+import { SimulationNodeDatum } from "d3";
 import { FONT_SIZE } from "./canvas";
+import { AssociationNode, SegmentedLink } from "./types";
+import { nodeRatio } from "./utils";
 
 export function addLinks(
   svg: d3lib.Selection<SVGSVGElement, undefined, null, undefined>,
-  associationList: any[],
-  color: d3lib.ScaleOrdinal<string, string, never>,
+  linkList: SegmentedLink[],
+  color: d3lib.ScaleOrdinal<string, string, never>
 ) {
   return svg
     .append("g")
     .selectAll("path")
-    .data(associationList)
+    .data(linkList)
     .join("path")
     .attr("stroke", (d) => color(d.type))
     .attr("fill", "none")
@@ -20,21 +22,17 @@ export function addLinks(
 /**
  * Renders an arc link
  */
-export function linkArcFunc(d: SimulationLinkDatum<SimulationNodeDatum>) {
+export function linkArcFunc(d: SegmentedLink) {
   function xy(node: SimulationNodeDatum) {
     const x = node.x ?? 0;
     const y = node.y ?? 0;
     return [x, y];
   }
 
-  function nodeRatio(node: any) {
-    return node.maxRows / (node.maxLength + 2);
-  }
-
   function offset(
     dx: number,
     dy: number,
-    node: any,
+    node: AssociationNode,
     additionalMargin: boolean = false
   ) {
     const slopeLink = dy / dx;
@@ -46,22 +44,19 @@ export function linkArcFunc(d: SimulationLinkDatum<SimulationNodeDatum>) {
     if (slopeAbs < targetRatio) {
       // Link touches left/right side of node
       const tx_offset =
-        (x_sign * ((node as any).maxLength + 2 + margin) * FONT_SIZE) / 2;
+        (x_sign * (node.maxLength + 2 + margin) * FONT_SIZE) / 2;
       const ty_offset =
-        (y_sign * ((node as any).maxLength + 2) * slopeAbs * FONT_SIZE) / 2;
+        (y_sign * (node.maxLength + 2) * slopeAbs * FONT_SIZE) / 2;
       return [tx_offset, ty_offset];
     } else if (slopeAbs > targetRatio) {
       // Link touches top/bottom side of node
-      const tx_offset =
-        (((x_sign * (node as any).maxRows) / slopeAbs) * FONT_SIZE) / 2;
-      const ty_offset =
-        (y_sign * ((node as any).maxRows + margin) * FONT_SIZE) / 2;
+      const tx_offset = (((x_sign * node.maxRows) / slopeAbs) * FONT_SIZE) / 2;
+      const ty_offset = (y_sign * (node.maxRows + margin) * FONT_SIZE) / 2;
       return [tx_offset, ty_offset];
     } else {
       const tx_offset =
-        (x_sign * ((node as any).maxLength + 2 + margin) * FONT_SIZE) / 2;
-      const ty_offset =
-        (y_sign * ((node as any).maxRows + margin) * FONT_SIZE) / 2;
+        (x_sign * (node.maxLength + 2 + margin) * FONT_SIZE) / 2;
+      const ty_offset = (y_sign * (node.maxRows + margin) * FONT_SIZE) / 2;
       return [tx_offset, ty_offset];
     }
   }
@@ -72,8 +67,18 @@ export function linkArcFunc(d: SimulationLinkDatum<SimulationNodeDatum>) {
   const dx = tx - sx;
   const dy = ty - sy;
 
+  if (
+    typeof d.target === "string" ||
+    typeof d.target === "number" ||
+    !("maxLength" in d.target) ||
+    typeof d.source === "string" ||
+    typeof d.source === "number" ||
+    !("maxLength" in d.source)
+  ) {
+    return null;
+  }
   // Target
-  const [tx_offset, ty_offset] = offset(dx, dy, d.target, (d as any).arrow);
+  const [tx_offset, ty_offset] = offset(dx, dy, d.target, d.arrow);
   // Source
   const [sx_offset, sy_offset] = offset(dx, dy, d.source);
 

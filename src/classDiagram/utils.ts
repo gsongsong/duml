@@ -1,9 +1,17 @@
-import { Association, Attribute, Class } from "./types";
+import {
+  Association,
+  AssociationNode,
+  Attribute,
+  Class,
+  ClassNode,
+  Node,
+  SegmentedLink,
+} from "./types";
 
 /**
  * Converts an Association object into a d3 node
  */
-export function associationToNode(association: Association) {
+export function associationToNode(association: Association): AssociationNode {
   const { source, name, target } = association;
   return Object.create({
     id: `${source}-${name}-${target}`,
@@ -26,7 +34,7 @@ export function attributeToStr(attribute: Attribute) {
 /**
  * Converts a Class object into a d3 node
  */
-export function classToNode(cls: Class) {
+export function classToNode(cls: Class): ClassNode {
   const { name } = cls;
   return Object.create({
     id: name,
@@ -39,8 +47,8 @@ export function classToNode(cls: Class) {
 /**
  * Estimates the maximum number of characters to be reserved for a node
  */
-export function maxLength(node: unknown) {
-  const { name } = node as Class & Association;
+export function maxLength(node: Class | Association) {
+  const { name } = node;
   const { attributes } = node as Partial<Class>;
   const { source, target } = node as Partial<Association>;
   return Math.max(
@@ -52,10 +60,14 @@ export function maxLength(node: unknown) {
 /**
  * Estimates the maximum number of rows to be reserved for a node
  */
-export function maxRows(node: unknown) {
+export function maxRows(node: Class | Association) {
   const { attributes } = node as Partial<Class>;
   const { source, target } = node as Partial<Association>;
   return 1 + (attributes?.length ?? 0);
+}
+
+export function nodeRatio(node: Node) {
+  return node.maxRows / (node.maxLength + 2);
 }
 
 /**
@@ -63,7 +75,9 @@ export function maxRows(node: unknown) {
  * - Source node to association node
  * - Association node to target node
  */
-export function splitAssociation(association: Association) {
+export function splitAssociation(
+  association: Association
+): [SegmentedLink, SegmentedLink] {
   const { source, name, target } = association;
   const type = `${source}-${name}-${target}`;
   return [
@@ -71,6 +85,7 @@ export function splitAssociation(association: Association) {
       type,
       source,
       target: type,
+      arrow: false,
     },
     {
       type,

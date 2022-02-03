@@ -16,5 +16,5 @@ export function initCanvas(d3: typeof d3lib, options: Options = {}) {
     .attr("viewBox", [-vw / 2, -vh / 2, vw, vh])
     .attr("width", width)
     .attr("height", height)
-    .attr("font-size", FONT_SIZE)
+    .attr("font-size", FONT_SIZE);
 }

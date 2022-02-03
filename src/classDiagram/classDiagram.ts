@@ -17,14 +17,17 @@ export function ClassDiagram(
     ...classes.map(classToNode),
     ...associations.map(associationToNode),
   ];
-  const edgeList = associations.map(splitAssociation).flat();
-  const color = d3.scaleOrdinal(edgeList.map((edge) => edge.type), d3.schemeCategory10);
+  const linkList = associations.map(splitAssociation).flat();
+  const color = d3.scaleOrdinal(
+    linkList.map((edge) => edge.type),
+    d3.schemeCategory10
+  );
 
   const svg = initCanvas(d3, options);
-  const simulation = initSimulation(d3, nodeList, edgeList, options);
+  const simulation = initSimulation(d3, nodeList, linkList, options);
 
-  addDefinitions(svg, edgeList, color);
-  const link = addLinks(svg, edgeList, color);
+  addDefinitions(svg, linkList, color);
+  const link = addLinks(svg, linkList, color);
   const node = addNodes(svg, nodeList, dragFunc(d3, simulation));
 
   simulation.on("tick", () => {
