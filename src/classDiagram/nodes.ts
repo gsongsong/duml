@@ -1,5 +1,5 @@
 import * as d3lib from "d3";
-import { DragBehavior } from "d3";
+import { DragBehavior, SimulationNodeDatum } from "d3";
 import { Attribute, Class } from "./types";
 import { attributeToStr } from "./utils";
 
@@ -53,4 +53,10 @@ export function addNodes(
     .attr("dy", (_, index) => `${index}em`);
 
   return node;
+}
+
+export function nodeTransformFunc(d: any) {
+  return `translate(${((d as SimulationNodeDatum).x ?? 0) - (d.width + 2) * 4},${
+    (d as SimulationNodeDatum).y
+  })`
 }

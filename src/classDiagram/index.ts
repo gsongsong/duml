@@ -4,7 +4,7 @@ import { initCanvas } from "./canvas";
 import { addDefinitions } from "./definitions";
 import { dragFunc } from "./dragFunc";
 import { addLinks, linkArcFunc } from "./links";
-import { addNodes } from "./nodes";
+import { addNodes, nodeTransformFunc } from "./nodes";
 import { initSimulation } from "./simulation";
 import { Class, Association, Options } from "./types";
 import { associationToNode, classToNode, splitAssociation } from "./utils";
@@ -22,20 +22,14 @@ export function ClassDiagram(
 
   const svg = initCanvas(d3, options);
   const simulation = initSimulation(d3, nodeList, edgeList, options);
-  
+
   addDefinitions(svg);
   const link = addLinks(svg, edgeList);
   const node = addNodes(svg, nodeList, dragFunc(d3, simulation));
 
   simulation.on("tick", () => {
     link.attr("d", linkArcFunc);
-    node.attr(
-      "transform",
-      (d) =>
-        `translate(${((d as SimulationNodeDatum).x ?? 0) - (d.width + 2) * 4},${
-          (d as SimulationNodeDatum).y
-        })`
-    );
+    node.attr("transform", nodeTransformFunc);
   });
 
   return svg.node();
