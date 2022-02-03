@@ -1,1 +1,1 @@
-export { ClassDiagram } from './classDiagram';
+export { ClassDiagram } from './classDiagram/index';
