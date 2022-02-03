@@ -30,6 +30,7 @@ export function addNodes(
     .append("text")
     .text((d) => d.name)
     .style("font-family", "monospace")
+    .attr("dominant-baseline", "text-after-edge")
     .attr("x", FONT_SIZE)
     .attr("y", FONT_SIZE);
 
@@ -50,6 +51,7 @@ export function addNodes(
     .data((d) => d.attributes ?? [])
     .join("tspan")
     .text((d) => attributeToStr(d))
+    .attr("dominant-baseline", "text-after-edge")
     .attr("x", FONT_SIZE)
     .attr("dy", (_, index) => `${index * FONT_SIZE}`);
 
