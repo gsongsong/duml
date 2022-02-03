@@ -27,19 +27,25 @@ export function linkArcFunc(d: SimulationLinkDatum<SimulationNodeDatum>) {
   }
 
   function nodeRatio(node: any) {
-    return node.maxRows / node.maxLength;
+    return node.maxRows / (node.maxLength + 2);
   }
 
-  function offset(dx: number, dy: number, node: any) {
+  function offset(
+    dx: number,
+    dy: number,
+    node: any,
+    additionalMargin: boolean = false
+  ) {
     const slopeLink = dy / dx;
     const slopeAbs = Math.abs(slopeLink);
     const targetRatio = nodeRatio(node);
+    const margin = Number(additionalMargin);
     const [x_sign, y_sign] = [-Math.sign(dx), -Math.sign(dy)];
     // Check link touches left/right or top/bottom side of node
     if (slopeAbs < targetRatio) {
       // Link touches left/right side of node
       const tx_offset =
-        (x_sign * ((node as any).maxLength + 2) * FONT_SIZE) / 2;
+        (x_sign * ((node as any).maxLength + 2 + margin) * FONT_SIZE) / 2;
       const ty_offset =
         (y_sign * ((node as any).maxLength + 2) * slopeAbs * FONT_SIZE) / 2;
       return [tx_offset, ty_offset];
@@ -47,12 +53,14 @@ export function linkArcFunc(d: SimulationLinkDatum<SimulationNodeDatum>) {
       // Link touches top/bottom side of node
       const tx_offset =
         (((x_sign * (node as any).maxRows) / slopeAbs) * FONT_SIZE) / 2;
-      const ty_offset = (y_sign * (node as any).maxRows * FONT_SIZE) / 2;
+      const ty_offset =
+        (y_sign * ((node as any).maxRows + margin) * FONT_SIZE) / 2;
       return [tx_offset, ty_offset];
     } else {
       const tx_offset =
-        (x_sign * ((node as any).maxLength + 2) * FONT_SIZE) / 2;
-      const ty_offset = (y_sign * (node as any).maxRows * FONT_SIZE) / 2;
+        (x_sign * ((node as any).maxLength + 2 + margin) * FONT_SIZE) / 2;
+      const ty_offset =
+        (y_sign * ((node as any).maxRows + margin) * FONT_SIZE) / 2;
       return [tx_offset, ty_offset];
     }
   }
@@ -64,7 +72,7 @@ export function linkArcFunc(d: SimulationLinkDatum<SimulationNodeDatum>) {
   const dy = ty - sy;
 
   // Target
-  const [tx_offset, ty_offset] = offset(dx, dy, d.target);
+  const [tx_offset, ty_offset] = offset(dx, dy, d.target, (d as any).arrow);
   // Source
   const [sx_offset, sy_offset] = offset(dx, dy, d.source);
 
