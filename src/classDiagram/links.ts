@@ -22,7 +22,7 @@ export function addLinks(
 /**
  * Renders an arc link
  */
-export function linkArcFunc(d: SegmentedLink) {
+export function linkFunc(d: SegmentedLink) {
   function xy(node: SimulationNodeDatum) {
     const x = node.x ?? 0;
     const y = node.y ?? 0;
@@ -86,6 +86,6 @@ export function linkArcFunc(d: SegmentedLink) {
 
   return `
       M${sx - sx_offset},${sy - sy_offset}
-      A${r},${r} 0 0,1 ${tx + tx_offset},${ty + ty_offset}
+      L${tx + tx_offset},${ty + ty_offset}
     `;
 }

@@ -2,7 +2,7 @@ import * as d3lib from "d3";
 import { initCanvas } from "./canvas";
 import { addDefinitions } from "./definitions";
 import { dragFunc } from "./dragFunc";
-import { addLinks, linkArcFunc } from "./links";
+import { addLinks, linkFunc } from "./links";
 import { addNodes, nodeTransformFunc } from "./nodes";
 import { initSimulation } from "./simulation";
 import { Class, Association, Options } from "./types";
@@ -15,7 +15,7 @@ export function ClassDiagram(
 ) {
   const nodeList = [
     ...classes.map(classToNode),
-    ...associations.map(associationToNode),
+    ...(associations.map(associationToNode).flat()),
   ];
   const linkList = associations.map(splitAssociation).flat();
   const color = d3.scaleOrdinal(
@@ -31,7 +31,7 @@ export function ClassDiagram(
   const node = addNodes(svg, nodeList, dragFunc(d3, simulation));
 
   simulation.on("tick", () => {
-    link.attr("d", linkArcFunc);
+    link.attr("d", linkFunc);
     node.attr("transform", nodeTransformFunc);
   });
 

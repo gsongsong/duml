@@ -12,7 +12,8 @@ export function addNodes(
   const node = svg
     .append("g")
     .selectAll("g")
-    .data(classList)
+    // `filter()` prevents node with zero length (e.g. association intermediate node) being rendered
+    .data(classList.filter((cls) => cls.maxLength))
     .join("g")
     .attr("stroke-linecap", "round")
     .attr("stroke-linejoin", "round")

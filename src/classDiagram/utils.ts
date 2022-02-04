@@ -11,15 +11,36 @@ import {
 /**
  * Converts an Association object into a d3 node
  */
-export function associationToNode(association: Association): AssociationNode {
+export function associationToNode(
+  association: Association
+): [AssociationNode, AssociationNode, AssociationNode] {
   const { source, name, target } = association;
-  return Object.create({
-    id: `${source}-${name}-${target}`,
-    maxLength: maxLength(association),
-    maxRows: maxRows(association),
-    edge: true,
-    ...association,
-  });
+  const associationNode = `${source}-${name}-${target}`;
+  const intermediate1 = `${associationNode}-1`;
+  const intermediate2 = `${associationNode}-2`;
+  return [
+    Object.create({
+      id: intermediate1,
+      maxLength: 0,
+      maxRows: 0,
+      edge: true,
+      ...association,
+    }),
+    Object.create({
+      id: associationNode,
+      maxLength: maxLength(association),
+      maxRows: maxRows(association),
+      edge: true,
+      ...association,
+    }),
+    Object.create({
+      id: intermediate2,
+      maxLength: 0,
+      maxRows: 0,
+      edge: true,
+      ...association,
+    }),
+  ];
 }
 
 /**
@@ -71,25 +92,41 @@ export function nodeRatio(node: Node) {
 }
 
 /**
- * Splits 1 association into 2 links:
- * - Source node to association node
- * - Association node to target node
+ * Splits 1 association into 4 links:
+ * - Source node to the first intermediate node
+ * - The first intermediate node to association node
+ * - Association node to the second intermediate node
+ * - The second node to target node
  */
 export function splitAssociation(
   association: Association
-): [SegmentedLink, SegmentedLink] {
+): [SegmentedLink, SegmentedLink, SegmentedLink, SegmentedLink] {
   const { source, name, target } = association;
-  const type = `${source}-${name}-${target}`;
+  const associationNode = `${source}-${name}-${target}`;
+  const intermediate1 = `${associationNode}-1`;
+  const intermediate2 = `${associationNode}-2`;
   return [
     {
-      type,
+      type: associationNode,
       source,
-      target: type,
+      target: intermediate1,
       arrow: false,
     },
     {
-      type,
-      source: type,
+      type: associationNode,
+      source: intermediate1,
+      target: associationNode,
+      arrow: false,
+    },
+    {
+      type: associationNode,
+      source: associationNode,
+      target: intermediate2,
+      arrow: false,
+    },
+    {
+      type: associationNode,
+      source: intermediate2,
       target,
       arrow: true,
     },
