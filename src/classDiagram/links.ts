@@ -17,7 +17,7 @@ export function addLinks(
     .attr("stroke", (d) => color(d.type))
     .attr("stroke-width", 1.5)
     .attr("fill", "none")
-    .attr("marker-end", (d) => (d.arrow ? `url(#arrow-${d.type})` : ""));
+    .attr("marker-end", (d) => `url(#arrow-${d.type})`);
 }
 
 /**
@@ -44,26 +44,30 @@ export function linkFunc(d: SegmentedLink) {
     // Check link touches left/right or top/bottom side of node
     if (slopeAbs < targetRatio) {
       // Link touches left/right side of node
-      const x_offset = x_sign * Math.min((node.width + margin) / 2, Math.abs(dx));
+      const x_offset =
+        x_sign * Math.min((node.width + margin) / 2, Math.abs(dx));
       const y_offset = y_sign * Math.abs(x_offset) * slopeAbs;
       return [x_offset, y_offset];
     } else if (slopeAbs > targetRatio) {
       // Link touches top/bottom side of node
-      const y_offset = y_sign * Math.min((node.height + margin) / 2, Math.abs(dy));
-      const x_offset = x_sign * Math.abs(y_offset) / slopeAbs;
+      const y_offset =
+        y_sign * Math.min((node.height + margin) / 2, Math.abs(dy));
+      const x_offset = (x_sign * Math.abs(y_offset)) / slopeAbs;
       return [x_offset, y_offset];
     } else {
-      const x_offset = x_sign * Math.min((node.width + margin) / 2, Math.abs(dx));
-      const y_offset = y_sign * Math.min((node.height + margin) / 2, Math.abs(dy));
+      const x_offset =
+        x_sign * Math.min((node.width + margin) / 2, Math.abs(dx));
+      const y_offset =
+        y_sign * Math.min((node.height + margin) / 2, Math.abs(dy));
       return [x_offset, y_offset];
     }
   }
 
   const [tx, ty] = xy(d.target as SimulationNodeDatum);
+  const [i2x, i2y] = xy((d as any).intermediate2 as SimulationNodeDatum);
+  const [ax, ay] = xy((d as any).associationNode as SimulationNodeDatum);
+  const [i1x, i1y] = xy((d as any).intermediate1 as SimulationNodeDatum);
   const [sx, sy] = xy(d.source as SimulationNodeDatum);
-
-  const dx = tx - sx;
-  const dy = ty - sy;
 
   if (
     typeof d.target === "string" ||
@@ -76,12 +80,14 @@ export function linkFunc(d: SegmentedLink) {
     return null;
   }
   // Target
-  const [tx_offset, ty_offset] = offset(dx, dy, d.target, d.arrow);
+  const [tx_offset, ty_offset] = offset(tx - ax, ty - ay, d.target, true);
   // Source
-  const [sx_offset, sy_offset] = offset(dx, dy, d.source);
+  const [sx_offset, sy_offset] = offset(ax - sx, ay - sy, d.source);
 
   return `
       M${sx - sx_offset},${sy - sy_offset}
-      L${tx + tx_offset},${ty + ty_offset}
+      Q${i1x},${i1y} ${ax},${ay} ${i2x},${i2y} ${tx + tx_offset},${
+    ty + ty_offset
+  }
     `;
 }

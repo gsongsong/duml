@@ -37,7 +37,6 @@ export type SegmentedLink = {
   type: string;
   source: string;
   target: string;
-  arrow: boolean;
 };
 
 type NodeBase = {

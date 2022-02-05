@@ -111,25 +111,21 @@ export function splitAssociation(
       type: associationNode,
       source,
       target: intermediate1,
-      arrow: false,
     },
     {
       type: associationNode,
       source: intermediate1,
       target: associationNode,
-      arrow: false,
     },
     {
       type: associationNode,
       source: associationNode,
       target: intermediate2,
-      arrow: false,
     },
     {
       type: associationNode,
       source: intermediate2,
       target,
-      arrow: true,
     },
   ];
 }
