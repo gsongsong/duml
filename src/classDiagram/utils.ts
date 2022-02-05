@@ -1,3 +1,4 @@
+import { FONT_SIZE } from "./canvas";
 import {
   Association,
   AssociationNode,
@@ -21,22 +22,22 @@ export function associationToNode(
   return [
     Object.create({
       id: intermediate1,
-      maxLength: 0,
-      maxRows: 0,
+      width: 0,
+      height: 0,
       edge: true,
       ...association,
     }),
     Object.create({
       id: associationNode,
-      maxLength: maxLength(association),
-      maxRows: maxRows(association),
+      width: width(association),
+      height: height(association),
       edge: true,
       ...association,
     }),
     Object.create({
       id: intermediate2,
-      maxLength: 0,
-      maxRows: 0,
+      width: 0,
+      height: 0,
       edge: true,
       ...association,
     }),
@@ -59,8 +60,8 @@ export function classToNode(cls: Class): ClassNode {
   const { name } = cls;
   return Object.create({
     id: name,
-    maxLength: maxLength(cls),
-    maxRows: maxRows(cls),
+    width: width(cls),
+    height: height(cls),
     ...cls,
   });
 }
@@ -68,27 +69,27 @@ export function classToNode(cls: Class): ClassNode {
 /**
  * Estimates the maximum number of characters to be reserved for a node
  */
-export function maxLength(node: Class | Association) {
+export function width(node: Class | Association) {
   const { name } = node;
   const { attributes } = node as Partial<Class>;
   const { source, target } = node as Partial<Association>;
   return Math.max(
     name.length,
     ...(attributes?.map((attribute) => attributeToStr(attribute).length) ?? [0])
-  );
+  ) * FONT_SIZE;
 }
 
 /**
  * Estimates the maximum number of rows to be reserved for a node
  */
-export function maxRows(node: Class | Association) {
+export function height(node: Class | Association) {
   const { attributes } = node as Partial<Class>;
   const { source, target } = node as Partial<Association>;
-  return 1 + (attributes?.length ?? 0);
+  return (1 + (attributes?.length ?? 0)) * FONT_SIZE;
 }
 
 export function nodeRatio(node: Node) {
-  return node.maxRows / (node.maxLength + 2);
+  return node.height / node.width;
 }
 
 /**

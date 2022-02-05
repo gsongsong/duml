@@ -38,25 +38,25 @@ export function linkFunc(d: SegmentedLink) {
     const slopeLink = dy / dx;
     const slopeAbs = Math.abs(slopeLink);
     const targetRatio = nodeRatio(node);
-    const margin = Number(additionalMargin);
+    const margin = Number(additionalMargin) * FONT_SIZE;
     const [x_sign, y_sign] = [-Math.sign(dx), -Math.sign(dy)];
     // Check link touches left/right or top/bottom side of node
     if (slopeAbs < targetRatio) {
       // Link touches left/right side of node
       const tx_offset =
-        (x_sign * (node.maxLength + 2 + margin) * FONT_SIZE) / 2;
+        (x_sign * (node.width + margin)) / 2;
       const ty_offset =
-        (y_sign * (node.maxLength + 2) * slopeAbs * FONT_SIZE) / 2;
+        (y_sign * node.width * slopeAbs) / 2;
       return [tx_offset, ty_offset];
     } else if (slopeAbs > targetRatio) {
       // Link touches top/bottom side of node
-      const tx_offset = (((x_sign * node.maxRows) / slopeAbs) * FONT_SIZE) / 2;
-      const ty_offset = (y_sign * (node.maxRows + margin) * FONT_SIZE) / 2;
+      const tx_offset = ((x_sign * node.height / slopeAbs)) / 2;
+      const ty_offset = (y_sign * (node.height + margin)) / 2;
       return [tx_offset, ty_offset];
     } else {
       const tx_offset =
-        (x_sign * (node.maxLength + 2 + margin) * FONT_SIZE) / 2;
-      const ty_offset = (y_sign * (node.maxRows + margin) * FONT_SIZE) / 2;
+        (x_sign * (node.width + margin)) / 2;
+      const ty_offset = (y_sign * (node.width + margin)) / 2;
       return [tx_offset, ty_offset];
     }
   }
@@ -70,10 +70,10 @@ export function linkFunc(d: SegmentedLink) {
   if (
     typeof d.target === "string" ||
     typeof d.target === "number" ||
-    !("maxLength" in d.target) ||
+    !("width" in d.target) ||
     typeof d.source === "string" ||
     typeof d.source === "number" ||
-    !("maxLength" in d.source)
+    !("width" in d.source)
   ) {
     return null;
   }

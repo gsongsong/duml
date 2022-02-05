@@ -13,7 +13,7 @@ export function addNodes(
     .append("g")
     .selectAll("g")
     // `filter()` prevents node with zero length (e.g. association intermediate node) being rendered
-    .data(classList.filter((cls) => cls.maxLength))
+    .data(classList.filter((cls) => cls.width))
     .join("g")
     .attr("stroke-linecap", "round")
     .attr("stroke-linejoin", "round")
@@ -25,7 +25,7 @@ export function addNodes(
     .attr("stroke", "black")
     .attr("fill", "white")
     .attr("opacity", (d) => 'edge' in d ? 0.25 : 1)
-    .attr("width", (d) => (d.maxLength + 2) * FONT_SIZE)
+    .attr("width", (d) => d.width)
     .attr("height", FONT_SIZE);
 
   node
@@ -43,7 +43,7 @@ export function addNodes(
     .attr("stroke", "black")
     .attr("fill", "white")
     .attr("opacity", (d) => 'edge' in d ? 0.25 : 1)
-    .attr("width", (d) => (d.maxLength + 2) * FONT_SIZE)
+    .attr("width", (d) => d.width)
     .attr("height", (d) => (d.attributes?.length ?? 0) * FONT_SIZE);
 
   node
@@ -63,7 +63,7 @@ export function addNodes(
 
 export function nodeTransformFunc(d: Node) {
   return `translate(
-    ${(d.x ?? 0) - ((d.maxLength + 2) * FONT_SIZE) / 2},
-    ${(d.y ?? 0) - (d.maxRows * FONT_SIZE) / 2}
+    ${(d.x ?? 0) - d.width / 2},
+    ${(d.y ?? 0) - d.height / 2}
   )`;
 }

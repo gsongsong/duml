@@ -42,8 +42,8 @@ export type SegmentedLink = {
 
 type NodeBase = {
   id: string;
-  maxLength: number;
-  maxRows: number;
+  width: number;
+  height: number;
 };
 
 export type ClassNode = NodeBase & Class & SimulationNodeDatum;
