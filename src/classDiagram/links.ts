@@ -43,21 +43,18 @@ export function linkFunc(d: SegmentedLink) {
     // Check link touches left/right or top/bottom side of node
     if (slopeAbs < targetRatio) {
       // Link touches left/right side of node
-      const tx_offset =
-        (x_sign * (node.width + margin)) / 2;
-      const ty_offset =
-        (y_sign * node.width * slopeAbs) / 2;
-      return [tx_offset, ty_offset];
+      const x_offset = x_sign * Math.min((node.width + margin) / 2, Math.abs(dx));
+      const y_offset = y_sign * Math.abs(x_offset) * slopeAbs;
+      return [x_offset, y_offset];
     } else if (slopeAbs > targetRatio) {
       // Link touches top/bottom side of node
-      const tx_offset = ((x_sign * node.height / slopeAbs)) / 2;
-      const ty_offset = (y_sign * (node.height + margin)) / 2;
-      return [tx_offset, ty_offset];
+      const y_offset = y_sign * Math.min((node.height + margin) / 2, Math.abs(dy));
+      const x_offset = x_sign * Math.abs(y_offset) / slopeAbs;
+      return [x_offset, y_offset];
     } else {
-      const tx_offset =
-        (x_sign * (node.width + margin)) / 2;
-      const ty_offset = (y_sign * (node.width + margin)) / 2;
-      return [tx_offset, ty_offset];
+      const x_offset = x_sign * Math.min((node.width + margin) / 2, Math.abs(dx));
+      const y_offset = y_sign * Math.min((node.height + margin) / 2, Math.abs(dy));
+      return [x_offset, y_offset];
     }
   }
 
@@ -81,8 +78,6 @@ export function linkFunc(d: SegmentedLink) {
   const [tx_offset, ty_offset] = offset(dx, dy, d.target, d.arrow);
   // Source
   const [sx_offset, sy_offset] = offset(dx, dy, d.source);
-
-  const r = Math.hypot(dx + tx_offset + sx_offset, dy + ty_offset + sy_offset);
 
   return `
       M${sx - sx_offset},${sy - sy_offset}
