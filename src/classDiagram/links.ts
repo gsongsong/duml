@@ -34,12 +34,11 @@ export function linkFunc(d: SegmentedLink) {
     dx: number,
     dy: number,
     node: AssociationNode,
-    additionalMargin: boolean = false
   ) {
     const slopeLink = dy / dx;
     const slopeAbs = Math.abs(slopeLink);
     const targetRatio = nodeRatio(node);
-    const margin = Number(additionalMargin) * FONT_SIZE;
+    const margin = FONT_SIZE;
     const [x_sign, y_sign] = [-Math.sign(dx), -Math.sign(dy)];
     // Check link touches left/right or top/bottom side of node
     if (slopeAbs < targetRatio) {
@@ -80,7 +79,7 @@ export function linkFunc(d: SegmentedLink) {
     return null;
   }
   // Target
-  const [tx_offset, ty_offset] = offset(tx - ax, ty - ay, d.target, true);
+  const [tx_offset, ty_offset] = offset(tx - ax, ty - ay, d.target);
   // Source
   const [sx_offset, sy_offset] = offset(ax - sx, ay - sy, d.source);
 
