@@ -1,5 +1,5 @@
 import * as d3lib from "d3";
-import { SimulationLinkDatum } from "d3";
+import { SimulationLinkDatum, SimulationNodeDatum } from "d3";
 import { Node } from "./types";
 
 type Event = {
@@ -8,15 +8,7 @@ type Event = {
   dy: number;
   identifier: string;
   sourceEvent: MouseEvent;
-  subject: {
-    fx: number | null;
-    fy: number | null;
-    index: number;
-    vx: number;
-    vy: number;
-    x: number;
-    y: number;
-  };
+  subject: SimulationNodeDatum;
   target: Function;
   type: string;
   x: number;
