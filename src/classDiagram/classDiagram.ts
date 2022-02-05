@@ -25,6 +25,7 @@ export function ClassDiagram(
 
   const svg = initCanvas(d3, options);
   const simulation = initSimulation(d3, nodeList, linkList, options);
+  // At this point each link in `linkList` get updated to have source and target objects
 
   addDefinitions(svg, linkList, color);
   const link = addLinks(svg, linkList, color);
