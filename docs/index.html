@@ -12,86 +12,74 @@
   <script>
     const classes = [
       {
-        name: "DeploymentOption",
-        attributes: [{ visibility: "public", name: "name", type: "string" }],
-      },
-      {
-        name: "Feature",
+        name: "Account",
         attributes: [
-          { visibility: "public", name: "id", type: "string" },
-          { visibility: "public", name: "name", type: "string" },
+          { visibility: "public", name: "type" },
+          { visibility: "public", name: "owner" },
         ],
       },
       {
-        name: "FeatureImplementation",
-        attributes: [{ visibility: "public", name: "version", type: "number" }],
+        name: "ATM",
+        attributes: [{ visibility: "public", name: "location" }],
       },
-      { name: "FeatureTransferRequest" },
       {
-        name: "Milestone",
+        name: "AMT_Transaction",
         attributes: [
-          { visibility: "public", name: "name", type: "string" },
-          { visibility: "public", name: "date", type: "number" },
+          { visibility: "public", name: "transactionId" },
+          { visibility: "public", name: "date" },
+          { visibility: "public", name: "type" },
         ],
       },
       {
-        name: "Operator",
-        attributes: [{ visibility: "public", name: "name", type: "string" }],
-      },
-      { name: "OwnerTransferRequest" },
-      {
-        name: "Package",
+        name: "Bank",
         attributes: [
-          { visibility: "public", name: "name", type: "string" },
-          { visibility: "public", name: "type", type: "PackageType" },
-          { visibility: "public", name: "status", type: "PackageStatus" },
+          { visibility: "public", name: "code" },
+          { visibility: "public", name: "address" },
         ],
       },
       {
-        name: "Product",
-        attributes: [{ visibility: "public", name: "name", type: "string" }],
+        name: "Checking_Account",
+        attributes: [{ visibility: "public", name: "accountNo" }],
       },
       {
-        name: "RANSharingOption",
-        attributes: [{ visibility: "public", name: "name", type: "string" }],
-      },
-      {
-        name: "RadioAccessTechnology",
-        attributes: [{ visibility: "public", name: "name", type: "string" }],
-      },
-      {
-        name: "User",
+        name: "Customer",
         attributes: [
-          { visibility: "public", name: "username", type: "string" },
-          { visibility: "private", name: "password", type: "string" },
-          { visibility: "public", name: "permissions", type: "Permission[]" },
+          { visibility: "public", name: "name" },
+          { visibility: "public", name: "address" },
+          { visibility: "public", name: "dob" },
         ],
+      },
+      {
+        name: "Debit_Card",
+        attributes: [{ visibility: "public", name: "cardNo" }],
+      },
+      {
+        name: "Transfer_Transaction",
+        attributes: [
+          { visibility: "public", name: "amount" },
+          { visibility: "public", name: "accountNo" },
+        ],
+      },
+      {
+        name: "Serving_Account",
+        attributes: [{ visibility: "public", name: "accountNo" }],
+      },
+      {
+        name: "Withdrawl_Transaction",
+        attributes: [{ visibility: "public", name: "amount" }],
       },
     ];
     const associations = [
-      { source: "User", name: "owns", target: "Feature" },
-      { source: "User", name: "owns", target: "Package" },
-      { source: "User", name: "requests", target: "FeatureTransferRequest" },
-      { source: "User", name: "requests", target: "OwnerTransferRequest" },
-      { source: "User", name: "reviews", target: "FeatureTransferRequest" },
-      { source: "User", name: "reviews", target: "OwnerTransferRequest" },
-      { source: "Package", name: "milestoned", target: "Milestone" },
-      { source: "Package", name: "succeeds", target: "Package" },
-      { source: "Package", name: "targets", target: "Operator" },
-      { source: "Product", name: "equips", target: "Package" },
-      { source: "Product", name: "supports", target: "DeploymentOption" },
-      { source: "Product", name: "supports", target: "RANSharingOption" },
-      { source: "Product", name: "supports", target: "RadioAccessTechnology" },
-      { source: "FeatureImplementation", name: "implements", target: "Feature" },
-      { source: "FeatureImplementation", name: "succeeds", target: "FeatureImplementation" },
-      { source: "FeatureImplementation", name: "supports", target: "DeploymentOption" },
-      { source: "FeatureImplementation", name: "supports", target: "Product" },
-      { source: "FeatureImplementation", name: "supports", target: "RANSharingOption" },
-      { source: "FeatureImplementation", name: "supports", target: "RadioAccessTechnology" },
-      { source: "FeatureTransferRequest", name: "transfers", target: "FeatureImplementation" },
-      { source: "FeatureTransferRequest", name: "transferredTo", target: "Package" },
-      { source: "OwnerTransferRequest", name: "transfers", target: "Feature" },
-      { source: "OwnerTransferRequest", name: "transferredTo", target: "User" },
+      { source: "ATM", name: "identifies", target: "AMT_Transaction" },
+      { source: "Bank", name: "maintains", target: "ATM" },
+      { source: "Bank", name: "has", target: "Customer" },
+      { source: "Bank", name: "manages", target: "Debit_Card" },
+      { source: "Checking_Account", name: "part_of", target: "Account" },
+      { source: "Customer", name: "owns", target: "Debit_Card" },
+      { source: "Customer", name: "owns", target: "Account" },
+      { source: "Serving_Account", name: "part_of", target: "Account" },
+      { source: "Transfer_Transaction", name: "part_of", target: "AMT_Transaction" },
+      { source: "Withdrawl_Transaction", name: "part_of", target: "AMT_Transaction" },
     ];
     const classDiagram = duml.ClassDiagram(
       d3,
