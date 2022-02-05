@@ -29,7 +29,7 @@ export function ClassDiagram(
 
   addDefinitions(svg, linkList, color);
   const link = addLinks(svg, linkList, color);
-  const node = addNodes(svg, nodeList, dragFunc(d3, simulation));
+  const node = addNodes(svg, nodeList, dragFunc(d3, simulation), color);
 
   simulation.on("tick", () => {
     link.attr("d", linkFunc);

@@ -7,7 +7,8 @@ import { attributeToStr } from "./utils";
 export function addNodes(
   svg: d3lib.Selection<SVGSVGElement, undefined, null, undefined>,
   classList: Node[],
-  drag: DragBehavior<Element, Node, Node | SubjectPosition>
+  drag: DragBehavior<Element, Node, Node | SubjectPosition>,
+  color: d3lib.ScaleOrdinal<string, string, never>
 ) {
   const node = svg
     .append("g")
@@ -22,9 +23,8 @@ export function addNodes(
   // Node name
   node
     .append("rect")
-    .attr("stroke", "black")
+    .attr("stroke", (d) => 'edge' in d ? color((d as Node).id) : 'black')
     .attr("fill", "white")
-    .attr("opacity", (d) => 'edge' in d ? 0.25 : 1)
     .attr("width", (d) => d.width)
     .attr("height", FONT_SIZE);
 
@@ -40,9 +40,8 @@ export function addNodes(
   node
     .append("rect")
     .attr("y", FONT_SIZE)
-    .attr("stroke", "black")
+    .attr("stroke", (d) => 'edge' in d ? color((d as Node).id) : 'black')
     .attr("fill", "white")
-    .attr("opacity", (d) => 'edge' in d ? 0.25 : 1)
     .attr("width", (d) => d.width)
     .attr("height", (d) => (d.attributes?.length ?? 0) * FONT_SIZE);
 

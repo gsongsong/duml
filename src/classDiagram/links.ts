@@ -15,6 +15,7 @@ export function addLinks(
     .data(linkList)
     .join("path")
     .attr("stroke", (d) => color(d.type))
+    .attr("stroke-width", 1.5)
     .attr("fill", "none")
     .attr("marker-end", (d) => (d.arrow ? `url(#arrow-${d.type})` : ""));
 }
