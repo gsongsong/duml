@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dUML</title>
+  </head>
+  <body></body>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="./index.js"></script>
+  <script>
+    const classes = [
+      {
+        name: "Account",
+        attributes: [
+          { visibility: "public", name: "type" },
+          { visibility: "public", name: "owner" },
+        ],
+      },
+      {
+        name: "ATM",
+        attributes: [{ visibility: "public", name: "location" }],
+      },
+      {
+        name: "AMT_Transaction",
+        attributes: [
+          { visibility: "public", name: "transactionId" },
+          { visibility: "public", name: "date" },
+          { visibility: "public", name: "type" },
+        ],
+      },
+      {
+        name: "Bank",
+        attributes: [
+          { visibility: "public", name: "code" },
+          { visibility: "public", name: "address" },
+        ],
+      },
+      {
+        name: "Checking_Account",
+        attributes: [{ visibility: "public", name: "accountNo" }],
+      },
+      {
+        name: "Customer",
+        attributes: [
+          { visibility: "public", name: "name" },
+          { visibility: "public", name: "address" },
+          { visibility: "public", name: "dob" },
+        ],
+      },
+      {
+        name: "Debit_Card",
+        attributes: [{ visibility: "public", name: "cardNo" }],
+      },
+      {
+        name: "Transfer_Transaction",
+        attributes: [
+          { visibility: "public", name: "amount" },
+          { visibility: "public", name: "accountNo" },
+        ],
+      },
+      {
+        name: "Serving_Account",
+        attributes: [{ visibility: "public", name: "accountNo" }],
+      },
+      {
+        name: "Withdrawl_Transaction",
+        attributes: [{ visibility: "public", name: "amount" }],
+      },
+    ];
+    const associations = [
+      { source: "ATM", name: "identifies", target: "AMT_Transaction" },
+      { source: "Bank", name: "maintains", target: "ATM" },
+      { source: "Bank", name: "has", target: "Customer" },
+      { source: "Bank", name: "manages", target: "Debit_Card" },
+      { source: "Checking_Account", name: "part_of", target: "Account" },
+      { source: "Customer", name: "owns", target: "Debit_Card" },
+      { source: "Customer", name: "owns", target: "Account" },
+      { source: "Serving_Account", name: "part_of", target: "Account" },
+      { source: "Transfer_Transaction", name: "part_of", target: "AMT_Transaction" },
+      { source: "Withdrawl_Transaction", name: "part_of", target: "AMT_Transaction" },
+    ];
+    const classDiagram = duml.ClassDiagram(
+      d3,
+      { classes, associations },
+      { width: 1600, height: 900, vw: 3200, vh: 1800, force: -1000 }
+    );
+    document.body.appendChild(classDiagram);
+  </script>
+</html>

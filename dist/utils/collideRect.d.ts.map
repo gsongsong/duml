@@ -1,0 +1,1 @@
+{"version":3,"file":"collideRect.d.ts","sourceRoot":"","sources":["../../src/utils/collideRect.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,mBAAmB,EAAE,MAAM,IAAI,CAAC;AA4BzC,MAAM,CAAC,OAAO,WAAW,GAAG,CAAC,EAAE,GAAG;;uBAyFtB,mBAAmB,EAAE,WACpB,QAAQ;kBAOa,GAAG;gBAIL,GAAG;WAIR,GAAG;EAS7B"}
